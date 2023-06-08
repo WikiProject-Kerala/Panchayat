@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="./style.css" rel="stylesheet">
+  <title>പഞ്ചായത്ത് വിവരങ്ങൾ</title>
+</head>
+<body>
+ <section class="section">
+    <div class="container">
+	<div class="columns is-centered">
+		<div class="column is-half has-text-centered">
+      			<h2 class="title is-4">കേരളത്തിലെ ഗ്രാമപഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തില്‍</h2>
+		</div>
+	</div>
+    </div>
+ </section>
+ <div class="container">
+   <div align=center><div class="dropdown">
+     <label for="location-select">ജില്ല തിരഞ്ഞെടുക്കുക:</label>
+      <select id="location-select">
+        <option value="Q1419703">കാസർഗോഡ്</option>
+        <option value="Q2980652">കണ്ണൂർ</option>
+        <option value="Q1142979">കോഴിക്കോട്</option>
+        <option value="Q1364427">വയനാട്</option>
+        <option value="Q1030918">മലപ്പുറം</option>
+        <option value="Q1535742">പാലക്കാട്</option>
+        <option value="Q2429655">തൃശ്ശൂർ</option>
+        <option value="Q1356097">എറണാകുളം</option>
+        <option value="Q928959">ആലപ്പുഴ</option>
+        <option value="Q1353354">കോട്ടയം</option>
+        <option value="Q301821">ഇടുക്കി</option>
+        <option value="Q634935">പത്തനംതിട്ട</option>
+        <option value="Q1356124">കൊല്ലം</option>
+        <option value="Q162612">തിരുവനന്തപുരം</option>
+      </select>
+  </div>
+ </div>
+
+    <div>
+     <div align=center><div class="dropdown">
+      <label for="panchayat-select">പഞ്ചായത്ത് തിരഞ്ഞെടുക്കുക:</label>
+      <select id="panchayat-select" disabled>
+        <option value="">...പഞ്ചായത്ത്</option>
+      </select>
+     </div>
+    </div>
+<div class="columns is-mobile is-multiline is-centered">
+     <div class="column is-narrow">
+      <table class="table is-bordered" id="panchayat-table">
+          <thead>
+            <tr>
+                  <th>വാർഡുകൾ</th>
+                  <th>ജനസംഖ്യ</th>
+         	 <th>വിസ്തീർണ്ണം</th>
+          	 <th>പുരുഷജനസംഖ്യ</th>
+          	 <th>സ്ത്രീജനസംഖ്യ</th>
+            </tr>
+          </thead>
+          <tbody id="panchayat-data" class="has-text-centered">
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+    <div class="loading" id="loading-animation">
+      <div class="loading-icon"></div>
+      <div>Loading...</div>
+    </div>
+
+    <script>
+      const locationSelect = document.getElementById('location-select');
+      const panchayatSelect = document.getElementById('panchayat-select');
+      const panchayatTable = document.getElementById('panchayat-table');
+      const panchayatData = document.getElementById('panchayat-data');
+      const loadingAnimation = document.getElementById('loading-animation');
+
+      function fetchPanchayatList() {
+        const selectedLocation = locationSelect.value;
+        if (selectedLocation) {
+          const sparqlQueryList = `
+            SELECT ?panchayat ?panchayatLabel
+            WHERE {
+              ?panchayat wdt:P31 wd:Q2732840;
+                        wdt:P131 wd:${selectedLocation};
+                        rdfs:label ?panchayatLabel.
+              FILTER(LANG(?panchayatLabel) = 'ml')
+            }
+            ORDER BY ?panchayatLabel
+            LIMIT 100
+          `;
+
+          const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryList)}`;
+
+          fetch(url, {
+            headers: {
+              'Accept': 'application/json'
+            }
+          })
+            .then(response => response.json())
+            .then(data => {
+              const results = data.results.bindings;
+              panchayatSelect.innerHTML = '<option value="">------</option>';
+              results.forEach(result => {
+                const panchayatURI = result.panchayat.value;
+                const panchayatLabel = result.panchayatLabel.value;
+                const option = document.createElement('option');
+                option.value = panchayatURI;
+                option.textContent = panchayatLabel;
+                panchayatSelect.appendChild(option);
+              });
+              panchayatSelect.disabled = false;
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        } else {
+          panchayatSelect.innerHTML = '<option value="">...പഞ്ചായത്ത്</option>';
+          panchayatSelect.disabled = true;
+          panchayatTable.style.display = 'none';
+        }
+      }
+
+      function fetchPanchayatData() {
+        const selectedPanchayatURI = panchayatSelect.value;
+        if (selectedPanchayatURI) {
+          const sparqlQueryData = `
+            SELECT ?panchayatLabel ?population ?area ?literacyRate ?malePopulation ?femalePopulation (COUNT(?wards) AS ?wardsCount)
+            WHERE {
+              <${selectedPanchayatURI}> rdfs:label ?panchayatLabel.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P1082 ?population }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P2046 ?area }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P6897 ?literacyRate }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P1540 ?malePopulation }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P1539 ?femalePopulation }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P527 ?wards }.
+              FILTER(LANG(?panchayatLabel) = 'ml')
+            }
+          GROUP BY ?panchayatLabel ?population ?area ?literacyRate ?malePopulation ?femalePopulation
+            LIMIT 1
+          `;
+
+          const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryData)}`;
+
+          panchayatTable.style.display = 'none';
+          loadingAnimation.style.display = 'flex';
+
+          fetch(url, {
+            headers: {
+              'Accept': 'application/json'
+            }
+          })
+            .then(response => response.json())
+            .then(data => {
+              const panchayat = data.results.bindings[0];
+              if (panchayat) {
+                const panchayatLabel = panchayat.panchayatLabel?.value || 'N/A';
+                const wards = panchayat.wardsCount?.value || 'N/A';
+                const population = panchayat.population?.value || 'N/A';
+                const area = panchayat.area?.value || 'N/A';
+                const malePopulation = panchayat.malePopulation?.value || 'N/A';
+                const femalePopulation = panchayat.femalePopulation?.value || 'N/A';
+
+                const row = `
+                  <tr>
+                    <td>${wards}</td>
+                    <td>${population}</td>
+                    <td>${area}</td>
+                    <td>${malePopulation}</td>
+                    <td>${femalePopulation}</td>
+                  </tr>
+                `;
+                panchayatData.innerHTML = row;
+
+                panchayatTable.style.display = 'block';
+              } else {
+                panchayatData.innerHTML = '<tr><td colspan="6">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
+                panchayatTable.style.display = 'none';
+              }
+
+              loadingAnimation.style.display = 'none';
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              panchayatData.innerHTML = '<tr><td colspan="6">Error fetching data</td></tr>';
+              panchayatTable.style.display = 'none';
+              loadingAnimation.style.display = 'none';
+            });
+        } else {
+          panchayatTable.style.display = 'none';
+        }
+      }
+
+      locationSelect.addEventListener('change', fetchPanchayatList);
+      panchayatSelect.addEventListener('change', fetchPanchayatData);
+    </script>
+<section class="section">
+    		<div class="container">
+			<button class="btn"><a href="https://map.opendatakerala.org/" style="color:black; text-decoration: none; right: 0;"> View and Download the Map </a></button>
+		</div>
+		<div class="column is-half has-text-centered">
+  	</section>
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        <p><a href="https://www.wikidata.org/"><img src="./Images/Wikidata_Stamp_Rec_Light.png"></a></p>
+        The content is licensed <a href="https://creativecommons.org/publicdomain/zero/1.0/">under Creative Commons CC0</a>
+      <p> <strong>Dashboard</strong> designed and developed by <a href="https://www.wikidata.org/wiki/User:Gnoeee">Gnoeee</a>
+      </p>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>
