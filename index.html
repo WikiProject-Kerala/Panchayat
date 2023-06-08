@@ -13,7 +13,8 @@
     <div class="container">
 	<div class="columns is-centered">
 		<div class="column is-half has-text-centered">
-      			<h2 class="title is-4">കേരളത്തിലെ ഗ്രാമപഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തില്‍</h2>
+      			<h1 class="title is-4">കേരളത്തിലെ ഗ്രാമപഞ്ചായത്തുകൾ</h1>
+			<h2 class="title is-5">ഒറ്റനോട്ടത്തില്‍</h2>
 		</div>
 	</div>
     </div>
@@ -38,46 +39,53 @@
         <option value="Q162612">തിരുവനന്തപുരം</option>
       </select>
   </div>
- </div>
-
-    <div>
-     <div align=center><div class="dropdown">
+  <div align=center><div class="dropdown">
       <label for="panchayat-select">പഞ്ചായത്ത് തിരഞ്ഞെടുക്കുക:</label>
       <select id="panchayat-select" disabled>
         <option value="">...പഞ്ചായത്ത്</option>
       </select>
-     </div>
-    </div>
+  </div>
+</div>
 </br>
 <div class="columns is-mobile is-multiline is-centered">
      <div class="column is-narrow">
       <h4 class="subtitle is-4 has-text-centered">വാർഡുകൾ</h4>
-      <h3 class="subtitle is-2 has-text-centered" id="wards-count"></h3>
-      <table class="table is-bordered" id="panchayat-table">
+      <h3 class="subtitle is-3 has-text-centered" id="wards-count"></h3>
+      <table class="table is-bordered is-centered" id="panchayat-table">
           <thead>
             <tr>
-                  <th>ജനസംഖ്യ</th>
          	 <th>വിസ്തീർണ്ണം</th>
-          	 <th>പുരുഷജനസംഖ്യ</th>
-          	 <th>സ്ത്രീജനസംഖ്യ</th>
+         	 <th>LGD കോഡ്</th>
+         	 <th>LSG കോഡ്</th>
             </tr>
           </thead>
           <tbody id="panchayat-data">
           </tbody>
       </table>
+      <table class="table is-bordered is-centered" id="population-table">
+          <thead>
+            <tr>
+                  <th>ജനസംഖ്യ</th>
+                  <th>പുരുഷജനസംഖ്യ</th>
+          	 <th>സ്ത്രീജനസംഖ്യ</th>
+            </tr>
+          </thead>
+          <tbody id="population-data">
+          </tbody>
+      </table>
     </div>
   </div>
-
     <div class="loading" id="loading-animation">
       <div class="loading-icon"></div>
       <div>Loading...</div>
     </div>
-
     <script>
       const locationSelect = document.getElementById('location-select');
       const panchayatSelect = document.getElementById('panchayat-select');
       const panchayatTable = document.getElementById('panchayat-table');
+      const populationTable = document.getElementById('population-table');
       const panchayatData = document.getElementById('panchayat-data');
+      const populationData = document.getElementById('population-data');
       const loadingAnimation = document.getElementById('loading-animation');
 
       function fetchPanchayatList() {
@@ -92,7 +100,7 @@
               FILTER(LANG(?panchayatLabel) = 'ml')
             }
             ORDER BY ?panchayatLabel
-            LIMIT 100
+            LIMIT 150
           `;
 
           const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryList)}`;
@@ -123,6 +131,7 @@
           panchayatSelect.innerHTML = '<option value="">...പഞ്ചായത്ത്</option>';
           panchayatSelect.disabled = true;
           panchayatTable.style.display = 'none';
+          populationTable.style.display = 'none';
         }
       }
 
@@ -130,7 +139,7 @@
         const selectedPanchayatURI = panchayatSelect.value;
         if (selectedPanchayatURI) {
           const sparqlQueryData = `
-            SELECT ?panchayatLabel ?population ?area ?literacyRate ?malePopulation ?femalePopulation (COUNT(?wards) AS ?wardsCount)
+            SELECT ?panchayatLabel ?population ?area ?literacyRate ?malePopulation ?femalePopulation ?LGDcode ?LSGcode (COUNT(?wards) AS ?wardsCount)
             WHERE {
               <${selectedPanchayatURI}> rdfs:label ?panchayatLabel.
                OPTIONAL { <${selectedPanchayatURI}> wdt:P1082 ?population }.
@@ -139,18 +148,21 @@
                OPTIONAL { <${selectedPanchayatURI}> wdt:P1540 ?malePopulation }.
                OPTIONAL { <${selectedPanchayatURI}> wdt:P1539 ?femalePopulation }.
                OPTIONAL { <${selectedPanchayatURI}> wdt:P527 ?wards }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P6425 ?LGDcode }.
+               OPTIONAL { <${selectedPanchayatURI}> wdt:P8573 ?LSGcode }.
               FILTER(LANG(?panchayatLabel) = 'ml')
             }
-          GROUP BY ?panchayatLabel ?population ?area ?literacyRate ?malePopulation ?femalePopulation
+          GROUP BY ?panchayatLabel ?population ?area ?literacyRate ?malePopulation ?femalePopulation ?LGDcode ?LSGcode
             LIMIT 1
           `;
 
           const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryData)}`;
 
           panchayatTable.style.display = 'none';
+          populationTable.style.display = 'none';
           loadingAnimation.style.display = 'flex';
 
-           const wardsCountElement = document.getElementById('wards-count');
+          const wardsCountElement = document.getElementById('wards-count');
 
           fetch(url, {
             headers: {
@@ -164,42 +176,52 @@
                 const panchayatLabel = panchayat.panchayatLabel?.value || 'N/A';
                 const wardsCount = panchayat.wardsCount?.value || 'N/A';
                 const population = panchayat.population?.value || 'N/A';
-                const area = panchayat.area?.value || 'N/A';
+                const area = panchayat.area?.value + " ച.മീ" || 'N/A';
                 const malePopulation = panchayat.malePopulation?.value || 'N/A';
                 const femalePopulation = panchayat.femalePopulation?.value || 'N/A';
+                const LGDcode = panchayat.LGDcode?.value || 'N/A';
+                const LSGcode = panchayat.LSGcode?.value || 'N/A';
 
-        // Set the wardsCount value
-        wardsCountElement.textContent = wardsCount;
+                // Set the wardsCount value
+                wardsCountElement.textContent = wardsCount;
 
-                const row = `
+                const panchayatRow = `
+                  <tr>
+                    <td class="has-text-centered">${area}</td>
+                    <td class="has-text-centered">${LGDcode}</td>
+                    <td class="has-text-centered">${LSGcode}</td>
+                  </tr>
+                `;
+                panchayatData.innerHTML = panchayatRow;
+
+                const populationRow = `
                   <tr>
                     <td class="has-text-centered">${population}</td>
-                    <td class="has-text-centered">${area}</td>
                     <td class="has-text-centered">${malePopulation}</td>
                     <td class="has-text-centered">${femalePopulation}</td>
                   </tr>
                 `;
-                panchayatData.innerHTML = row;
+                populationData.innerHTML = populationRow;
 
                 panchayatTable.style.display = 'block';
+                populationTable.style.display = 'block';
               } else {
-                panchayatData.innerHTML = '<tr><td colspan="6">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
+                panchayatData.innerHTML = '<tr><td colspan="3">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
+                populationData.innerHTML = '<tr><td colspan="3">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
                 panchayatTable.style.display = 'none';
+                populationTable.style.display = 'none';
               }
 
               loadingAnimation.style.display = 'none';
             })
-            .catch(error => {
-              console.error('Error:', error);
-              panchayatData.innerHTML = '<tr><td colspan="6">ഡാറ്റ ലഭ്യമാക്കുന്നതിൽ പിശക്</td></tr>';
-              panchayatTable.style.display = 'none';
-              loadingAnimation.style.display = 'none';
-            });
+            
         } else {
+          panchayatData.innerHTML = '';
+          populationData.innerHTML = '';
           panchayatTable.style.display = 'none';
+          populationTable.style.display = 'none';
         }
       }
-
       locationSelect.addEventListener('change', fetchPanchayatList);
       panchayatSelect.addEventListener('change', fetchPanchayatData);
     </script>
