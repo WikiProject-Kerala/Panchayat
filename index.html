@@ -48,19 +48,21 @@
       </select>
      </div>
     </div>
+</br>
 <div class="columns is-mobile is-multiline is-centered">
      <div class="column is-narrow">
+      <h4 class="subtitle is-4 has-text-centered">വാർഡുകൾ</h4>
+      <h3 class="subtitle is-2 has-text-centered" id="wards-count"></h3>
       <table class="table is-bordered" id="panchayat-table">
           <thead>
             <tr>
-                  <th>വാർഡുകൾ</th>
                   <th>ജനസംഖ്യ</th>
          	 <th>വിസ്തീർണ്ണം</th>
           	 <th>പുരുഷജനസംഖ്യ</th>
           	 <th>സ്ത്രീജനസംഖ്യ</th>
             </tr>
           </thead>
-          <tbody id="panchayat-data" class="has-text-centered">
+          <tbody id="panchayat-data">
           </tbody>
       </table>
     </div>
@@ -148,6 +150,8 @@
           panchayatTable.style.display = 'none';
           loadingAnimation.style.display = 'flex';
 
+           const wardsCountElement = document.getElementById('wards-count');
+
           fetch(url, {
             headers: {
               'Accept': 'application/json'
@@ -158,19 +162,21 @@
               const panchayat = data.results.bindings[0];
               if (panchayat) {
                 const panchayatLabel = panchayat.panchayatLabel?.value || 'N/A';
-                const wards = panchayat.wardsCount?.value || 'N/A';
+                const wardsCount = panchayat.wardsCount?.value || 'N/A';
                 const population = panchayat.population?.value || 'N/A';
                 const area = panchayat.area?.value || 'N/A';
                 const malePopulation = panchayat.malePopulation?.value || 'N/A';
                 const femalePopulation = panchayat.femalePopulation?.value || 'N/A';
 
+        // Set the wardsCount value
+        wardsCountElement.textContent = wardsCount;
+
                 const row = `
                   <tr>
-                    <td>${wards}</td>
-                    <td>${population}</td>
-                    <td>${area}</td>
-                    <td>${malePopulation}</td>
-                    <td>${femalePopulation}</td>
+                    <td class="has-text-centered">${population}</td>
+                    <td class="has-text-centered">${area}</td>
+                    <td class="has-text-centered">${malePopulation}</td>
+                    <td class="has-text-centered">${femalePopulation}</td>
                   </tr>
                 `;
                 panchayatData.innerHTML = row;
@@ -185,7 +191,7 @@
             })
             .catch(error => {
               console.error('Error:', error);
-              panchayatData.innerHTML = '<tr><td colspan="6">Error fetching data</td></tr>';
+              panchayatData.innerHTML = '<tr><td colspan="6">ഡാറ്റ ലഭ്യമാക്കുന്നതിൽ പിശക്</td></tr>';
               panchayatTable.style.display = 'none';
               loadingAnimation.style.display = 'none';
             });
