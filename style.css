@@ -37,10 +37,10 @@
 
     .loading::before {
       content: "";
-      width: 40px;
-      height: 40px;
-      border-radius: 100%;
-      border: 1px solid #555;
+      width: 70px;
+      height: 70px;
+      border-radius: 250%;
+      border: 2px solid #4caf50;
       border-top-color: transparent;
       animation: spin 0.5s linear infinite;
     }
@@ -61,8 +61,6 @@
       cursor: pointer;
     }
 
-
-
 .btn {
   background-color: #4CAF50;
   border: none;
@@ -80,8 +78,8 @@
 .btn:hover {opacity: 0.4}
 
 .section{
-    padding-top: 32px;
-    padding-bottom: 26px;
+    padding-top: 38px;
+    padding-bottom: 30px;
 }
 
 .arrow {
@@ -147,10 +145,59 @@
       }
     }
 
+ #mySidenav {
+  position: absolute;
+  right: -55px;
+  transition: 0.3s;
+  padding: 10px;
+  width: 140px;
+  text-decoration: none;
+  font-size: 22px;
+  color: white;
+  text-align: right;
+  border-radius: 10px 0 0 10px;
+ }
+
+ #mySidenav:hover {
+right: 0;
+}
+
+#print {
+  top: 40px;
+  background-color: #4CAF50;
+}
+
+  @media print {
+    .print-border {
+      border: 1px solid black;
+      padding: 10px;
+    }
+  }
+
 .footer{
     padding-top: 10px;
     padding-bottom: 20px;
 }
+
+  .hide-on-print {
+    display: initial;
+  }
+
+  @media print {
+    .hide-on-print {
+      display: none !important;
+    }
+  }
+
+  .print-only {
+    display: none;
+  }
+
+  @media print {
+    .print-only {
+      display: block !important;
+    }
+  }
 
 @media (min-width: 768px) {
    .container {

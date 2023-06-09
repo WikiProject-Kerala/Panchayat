@@ -3,97 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Gram-panchayat, Wikidata">
+  <meta property="og:description" content="powered by Wikidata">
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="./style.css" rel="stylesheet">
   <title>കേരളത്തിലെ പഞ്ചായത്തുകൾ</title>
 </head>
 <body>
- <section class="section">
-    <div class="container">
+<section class="section">
+<div class="container">
 	<div class="columns is-centered">
 		<div class="column is-half has-text-centered">
-      			<h1 class="title is-4">കേരളത്തിലെ പഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തിൽ</h1>
+      			<h1 class="title is-4 hide-on-print">കേരളത്തിലെ പഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തിൽ</h1>
 		</div>
 	</div>
-    </div>
- </section>
- <div class="container">
-   <div align=center><div class="dropdown">
-     <label for="location-select">ജില്ല തിരഞ്ഞെടുക്കുക:</label>
-      <select id="location-select">
-        <option value="Q1419703">------</option>
-        <option value="Q1419703">കാസർഗോഡ്</option>
-        <option value="Q2980652">കണ്ണൂർ</option>
-        <option value="Q1142979">കോഴിക്കോട്</option>
-        <option value="Q1364427">വയനാട്</option>
-        <option value="Q1030918">മലപ്പുറം</option>
-        <option value="Q1535742">പാലക്കാട്</option>
-        <option value="Q2429655">തൃശ്ശൂർ</option>
-        <option value="Q1356097">എറണാകുളം</option>
-        <option value="Q928959">ആലപ്പുഴ</option>
-        <option value="Q1353354">കോട്ടയം</option>
-        <option value="Q301821">ഇടുക്കി</option>
-        <option value="Q634935">പത്തനംതിട്ട</option>
-        <option value="Q1356124">കൊല്ലം</option>
-        <option value="Q162612">തിരുവനന്തപുരം</option>
-      </select>
-  </div>
-  <div align=center><div class="dropdown">
-      <label for="panchayat-select">പഞ്ചായത്ത് തിരഞ്ഞെടുക്കുക:</label>
-      <select id="panchayat-select" disabled>
-        <option value="">...പഞ്ചായത്ത്</option>
-      </select>
-  </div>
+</div>
+</section>
+<div id="mySidenav" class="sidenav hide-on-print">
+  <a href="#" onclick="window.print(); return false;">
+    <i class="fa fa-print"></i> Print
+  </a>
 </div>
 </br>
-     <div><div class="loading" id="loading-animation">
-          <div class="loading-icon"></div>
-     </div>
-      <h5 class="subtitle is-5 has-text-centered" id="loading-animation">വാർഡുകൾ (എണ്ണം)</h5>
-      <h5 class="subtitle is-3 has-text-centered" id="wards-count"></h5>
-<div class="columns is-mobile is-multiline is-centered">
-     <div class="column is-narrow">
-        <table class="table is-bordered centered-table" id="panchayat-table">
-          <thead>
-            <tr>
-         	 <th>LGD കോഡ് <div class="popup-container">
-  			<span> 🛈</span>
-  			<div class="popup-content">
-    			<p>ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p></th>
-         	 <th>LSG കോഡ് <div class="popup-container">
-  			<span> 🛈</span>
-  			<div class="popup-content">
-    			<p>കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p></th>
-         	 <th>SEC കോഡ് <div class="popup-container">
-  			<span> 🛈</span>
-  			<div class="popup-content">
-    			<p>കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p></th>
-            </tr>
-          </thead>
-          <tbody id="panchayat-data">
-          </tbody>
-      </table>
+<div class="container">
+	<div align=center>
+		<div class="columns is-mobile is-multiline is-centered hide-on-print">
+			<div class="column is-narrow">
+				<div class="dropdown">
+				<label for="location-select" class="hide-on-print">ജില്ല തിരഞ്ഞെടുക്കുക:</label>
+					<select id="location-select">
+					<option value="Q1419703">------</option>
+					<option value="Q1419703">കാസർഗോഡ്</option>
+					<option value="Q2980652">കണ്ണൂർ</option>
+					<option value="Q1142979">കോഴിക്കോട്</option>
+					<option value="Q1364427">വയനാട്</option>
+					<option value="Q1030918">മലപ്പുറം</option>
+					<option value="Q1535742">പാലക്കാട്</option>
+					<option value="Q2429655">തൃശ്ശൂർ</option>
+					<option value="Q1356097">എറണാകുളം</option>
+					<option value="Q928959">ആലപ്പുഴ</option>
+					<option value="Q1353354">കോട്ടയം</option>
+					<option value="Q301821">ഇടുക്കി</option>
+					<option value="Q634935">പത്തനംതിട്ട</option>
+					<option value="Q1356124">കൊല്ലം</option>
+					<option value="Q162612">തിരുവനന്തപുരം</option>
+					</select>
+				</div>
+				<div class="dropdown">
+      				<label for="panchayat-select" class="hide-on-print">പഞ്ചായത്ത് തിരഞ്ഞെടുക്കുക:</label>
+					<select id="panchayat-select">
+					<option value="">...പഞ്ചായത്ത്</option>
+					</select>
+    				</div>
+			</div>
+		</div>
+		</br>
+
+      		<h2 class="title is-4" id="selected-panchayat"></h2>
+      		<h3 class="title is-5" id="selected-district"></h3>
+		</br>	
+      		<p class="subtitle is-5 has-text-centered">വാർഡുകൾ (എണ്ണം)</p>
+      		<p class="subtitle is-4 has-text-centered" id="wards-count"></p>
+		<div class="columns is-mobile is-multiline is-centered">
+     			<div class="column is-narrow">
+        				<table class="table is-bordered centered-table" id="panchayat-table">
+          				<thead>
+            				<tr>
+         	 			<th>LGD കോഡ്</th><div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content">
+<p>ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p></div></div>
+         	 			<th>LSG കോഡ്</th><div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content"><p>കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p></div></div>
+				<th>SEC കോഡ്</th><div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content">
+<p>കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p></div></div>
+				</tr>
+				</thead>
+				<tbody id="panchayat-data">
+				</tbody>
+				</table>
+			</div>
+	
+      				<table class="table is-bordered centered-table" id="population-table">
+          				<thead>
+            				<tr>
+                  			<th>ജനസംഖ്യ</th>
+                  			<th>പുരുഷജനസംഖ്യ</th>
+          	 			<th>സ്ത്രീജനസംഖ്യ</th>
+            				</tr>
+          				</thead>
+				<tbody id="population-data">
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="loading" id="loading-animation">
+          	<div class="loading-icon"></div></div>
 </div>
-  <style>
-  #panchayat-table {
-    display: table !important;
-  }
-  </style>
-      <table class="table is-bordered centered-table" id="population-table">
-          <thead>
-            <tr>
-                  <th>ജനസംഖ്യ</th>
-                  <th>പുരുഷജനസംഖ്യ</th>
-          	 <th>സ്ത്രീജനസംഖ്യ</th>
-            </tr>
-          </thead>
-          <tbody id="population-data">
-          </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+</section>
     <script>
       const locationSelect = document.getElementById('location-select');
       const panchayatSelect = document.getElementById('panchayat-select');
@@ -150,6 +156,16 @@
         }
       }
 
+const selectedPanchayat = document.getElementById('selected-panchayat');
+
+function displaySelectedPanchayat() {
+  const selectedPanchayatOption = panchayatSelect.options[panchayatSelect.selectedIndex];
+  const selectedPanchayatLabel = selectedPanchayatOption.textContent;
+  selectedPanchayatDisplay.textContent = selectedPanchayatLabel;
+}
+
+panchayatSelect.addEventListener('change', displaySelectedPanchayat);
+
       function fetchPanchayatData() {
         const selectedPanchayatURI = panchayatSelect.value;
         if (selectedPanchayatURI) {
@@ -199,6 +215,8 @@
                 // Set the wardsCount value
                 wardsCountElement.textContent = wardsCount;
 
+                selectedPanchayat.textContent = panchayatLabel;
+
                 const panchayatRow = `
                   <tr>
                     <td class="has-text-centered">${LGDcode}</td>
@@ -230,6 +248,7 @@
             })
             
         } else {
+         selectedPanchayat.textContent = '';
           panchayatData.innerHTML = '';
           populationData.innerHTML = '';
           panchayatTable.style.display = 'none';
@@ -238,23 +257,55 @@
       }
       locationSelect.addEventListener('change', fetchPanchayatList);
       panchayatSelect.addEventListener('change', fetchPanchayatData);
-    </script>
+
+</script>
+
 <section class="section">
-    		<div class="container">
-			<button class="btn"><a href="https://map.opendatakerala.org/" style="color:black; text-decoration: none; right: 0;"> View and Download the Map </a></button>
+    	<div class="container">
+		<button class="btn"><a href="https://map.opendatakerala.org/" style="color:white; text-decoration: none; right: 0;"><p class="hide-on-print">View and Download the Map</p></a></button>
+	</div>
+</section>
+<section>
+	<div class="container">
+		<div class="content has-text-centered">
+		<p class="print-only">LGD കോഡ്: ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p>
+		<p class="print-only">LSG കോഡ്: കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p>
+		<p class="print-only">SEC കോഡ്: കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p>
 		</div>
-		<div class="column is-half has-text-centered">
-  	</section>
+	</div>
+</section>
 <footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <p>
-        <p><a href="https://www.wikidata.org/"><img src="./Images/Wikidata_Stamp_Rec_Light.png"></a></p>
-        The content is licensed <a href="https://creativecommons.org/publicdomain/zero/1.0/">under Creative Commons CC0</a>
-      <p> <strong>Dashboard</strong> designed and developed by <a href="https://www.wikidata.org/wiki/User:Gnoeee">Gnoeee</a>
-      </p>
-    </div>
-  </div>
+	<div class="container">
+		<div class="content has-text-centered">
+		<p>
+        		<p><a href="https://www.wikidata.org/"><img src="./Images/Wikidata_Stamp_Rec_Light.png"></a></p>
+		<p>The content is licensed <a href="https://creativecommons.org/publicdomain/zero/1.0/">under Creative Commons CC0</a></p>
+		<p class="hide-on-print"> <strong>Dashboard</strong> designed and developed by <a href="https://www.wikidata.org/wiki/User:Gnoeee">Gnoeee</a>
+		</p></p>
+		<p class="print-only"> Printed from the dashboard designed and developed by<a href="https://www.wikidata.org/wiki/User:Gnoeee"> Gnoeee</a>
+		</p>
+		</div>
+	</div>
 </footer>
-  </body>
+<script>
+  function toggleSidenav() {
+    var dropdown = document.getElementById("panchayat-select");
+    var sidenav = document.getElementById("mySidenav");
+
+    if (dropdown.value !== "") {
+      sidenav.style.display = "block";
+    } else {
+      sidenav.style.display = "none";
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", function() {
+    var dropdown = document.getElementById("panchayat-select");
+    dropdown.addEventListener("change", toggleSidenav);
+
+    var sidenav = document.getElementById("mySidenav");
+    sidenav.style.display = "none";
+  });
+</script>
+</body>
 </html>
