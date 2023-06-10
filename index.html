@@ -11,7 +11,7 @@
   <title>കേരളത്തിലെ പഞ്ചായത്തുകൾ</title>
 </head>
 <body>
-<section class="section">
+<section class="section hide-on-print"">
 <div class="container">
 	<div class="columns is-centered">
 		<div class="column is-half has-text-centered">
@@ -31,9 +31,9 @@
 		<div class="columns is-mobile is-multiline is-centered hide-on-print">
 			<div class="column is-narrow">
 				<div class="dropdown">
-				<label for="location-select" class="hide-on-print">ജില്ല തിരഞ്ഞെടുക്കുക:</label>
+				<label for="location-select" class="hide-on-print">ജില്ല:</label>
 					<select id="location-select">
-					<option value="Q1419703">------</option>
+					<option value="">------</option>
 					<option value="Q1419703">കാസർഗോഡ്</option>
 					<option value="Q2980652">കണ്ണൂർ</option>
 					<option value="Q1142979">കോഴിക്കോട്</option>
@@ -50,10 +50,11 @@
 					<option value="Q162612">തിരുവനന്തപുരം</option>
 					</select>
 				</div>
+</br></br>
 				<div class="dropdown">
-      				<label for="panchayat-select" class="hide-on-print">പഞ്ചായത്ത് തിരഞ്ഞെടുക്കുക:</label>
+      				<label for="panchayat-select" class="hide-on-print">പഞ്ചായത്ത്:</label>
 					<select id="panchayat-select">
-					<option value="">...പഞ്ചായത്ത്</option>
+					<option value=""></option>
 					</select>
     				</div>
 			</div>
@@ -61,10 +62,17 @@
 		</br>
 
       		<h2 class="title is-4" id="selected-panchayat"></h2>
-      		<h3 class="title is-5" id="selected-district"></h3>
-		</br>	
+      		<h3 class="title is-5" id="selected-location"></h3>
+		</br>
+	</div>
+</div>
+<div class="container">
       		<p class="subtitle is-5 has-text-centered">വാർഡുകൾ (എണ്ണം)</p>
-      		<p class="subtitle is-4 has-text-centered" id="wards-count"></p>
+      		<p class="subtitle is-5 has-text-centered" id="wards-count"></p>
+</div>
+</br>
+<div class="container">
+	<div align=center>
 		<div class="columns is-mobile is-multiline is-centered">
      			<div class="column is-narrow">
         				<table class="table is-bordered centered-table" id="panchayat-table">
@@ -100,7 +108,35 @@
           	<div class="loading-icon"></div></div>
 </div>
 </section>
-    <script>
+<section class="section">
+    	<div class="container">
+		<button class="btn"><a href="https://map.opendatakerala.org/" style="color:white; text-decoration: none; right: 0;"><p class="hide-on-print">View and Download the Map</p></a></button>
+	</div>
+</section>
+<section>
+	<div class="container">
+		<div class="content has-text-centered">
+		<p class="print-only">LGD കോഡ്: ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p>
+		<p class="print-only">LSG കോഡ്: കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p>
+		<p class="print-only">SEC കോഡ്: കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p>
+		</div>
+	</div>
+</section>
+<footer class="footer">
+	<div class="container">
+		<div class="content has-text-centered">
+		<p>
+        		<p><a href="https://www.wikidata.org/"><img src="./Images/Wikidata_Stamp_Rec_Light.png"></a></p>
+		<p>The content is licensed <a href="https://creativecommons.org/publicdomain/zero/1.0/">under Creative Commons CC0</a></p>
+		<p class="hide-on-print"> <strong>Dashboard</strong> designed and developed by <a href="https://www.wikidata.org/wiki/User:Gnoeee">Gnoeee</a>
+		</p></p>
+		<p class="print-only"> Printed from the dashboard designed and developed by<a href="https://www.wikidata.org/wiki/User:Gnoeee"> Gnoeee</a>
+		</p>
+		</div>
+	</div>
+</footer>
+<script>
+
       const locationSelect = document.getElementById('location-select');
       const panchayatSelect = document.getElementById('panchayat-select');
       const panchayatTable = document.getElementById('panchayat-table');
@@ -109,9 +145,12 @@
       const populationData = document.getElementById('population-data');
       const loadingAnimation = document.getElementById('loading-animation');
 
+
       function fetchPanchayatList() {
         const selectedLocation = locationSelect.value;
+        const selectedLocationText = locationSelect.options[locationSelect.selectedIndex].text;
         if (selectedLocation) {
+          document.getElementById('selected-location').textContent = `${selectedLocationText} ജില്ല`;
           const sparqlQueryList = `
             SELECT ?panchayat ?panchayatLabel
             WHERE {
@@ -134,7 +173,7 @@
             .then(response => response.json())
             .then(data => {
               const results = data.results.bindings;
-              panchayatSelect.innerHTML = '<option value="">------</option>';
+              panchayatSelect.innerHTML = '<option value="">_____</option>';
               results.forEach(result => {
                 const panchayatURI = result.panchayat.value;
                 const panchayatLabel = result.panchayatLabel.value;
@@ -144,12 +183,15 @@
                 panchayatSelect.appendChild(option);
               });
               panchayatSelect.disabled = false;
+          panchayatTable.style.display = 'none';
+          populationTable.style.display = 'none';
             })
             .catch(error => {
               console.error('Error:', error);
             });
         } else {
-          panchayatSelect.innerHTML = '<option value="">...പഞ്ചായത്ത്</option>';
+          document.getElementById('selected-location').textContent = '';
+          panchayatSelect.innerHTML = '<option value="">-----</option>';
           panchayatSelect.disabled = true;
           panchayatTable.style.display = 'none';
           populationTable.style.display = 'none';
@@ -157,14 +199,22 @@
       }
 
 const selectedPanchayat = document.getElementById('selected-panchayat');
+const wardsCountElement = document.getElementById('wards-count');
 
 function displaySelectedPanchayat() {
-  const selectedPanchayatOption = panchayatSelect.options[panchayatSelect.selectedIndex];
-  const selectedPanchayatLabel = selectedPanchayatOption.textContent;
-  selectedPanchayatDisplay.textContent = selectedPanchayatLabel;
+          if (locationSelect.value !== '') {
+    selectedPanchayat.textContent = '';
+    wardsCountElement.textContent = '';
+  	} else {
+    	const selectedPanchayatOption = panchayatSelect.options[panchayatSelect.selectedIndex];
+    	const selectedPanchayatLabel = selectedPanchayatOption.textContent;
+    	selectedPanchayat.textContent = selectedPanchayatLabel;
+	wardsCountElement.textContent = wardsCount;
+  	}
 }
 
 panchayatSelect.addEventListener('change', displaySelectedPanchayat);
+locationSelect.addEventListener('change', displaySelectedPanchayat);
 
       function fetchPanchayatData() {
         const selectedPanchayatURI = panchayatSelect.value;
@@ -212,7 +262,7 @@ panchayatSelect.addEventListener('change', displaySelectedPanchayat);
                 const LSGcode = panchayat.LSGcode?.value || 'N/A';
                 const SECcode = panchayat.SECcode?.value || 'N/A';
 
-                // Set the wardsCount value
+                // Set the wardsCount value and Panchayat Label
                 wardsCountElement.textContent = wardsCount;
 
                 selectedPanchayat.textContent = panchayatLabel;
@@ -258,54 +308,36 @@ panchayatSelect.addEventListener('change', displaySelectedPanchayat);
       locationSelect.addEventListener('change', fetchPanchayatList);
       panchayatSelect.addEventListener('change', fetchPanchayatData);
 
-</script>
+function toggleSidenav() {
+  var locationDropdown = document.getElementById("location-select");
+  var panchayatDropdown = document.getElementById("panchayat-select");
+  var sidenav = document.getElementById("mySidenav");
 
-<section class="section">
-    	<div class="container">
-		<button class="btn"><a href="https://map.opendatakerala.org/" style="color:white; text-decoration: none; right: 0;"><p class="hide-on-print">View and Download the Map</p></a></button>
-	</div>
-</section>
-<section>
-	<div class="container">
-		<div class="content has-text-centered">
-		<p class="print-only">LGD കോഡ്: ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p>
-		<p class="print-only">LSG കോഡ്: കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p>
-		<p class="print-only">SEC കോഡ്: കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p>
-		</div>
-	</div>
-</section>
-<footer class="footer">
-	<div class="container">
-		<div class="content has-text-centered">
-		<p>
-        		<p><a href="https://www.wikidata.org/"><img src="./Images/Wikidata_Stamp_Rec_Light.png"></a></p>
-		<p>The content is licensed <a href="https://creativecommons.org/publicdomain/zero/1.0/">under Creative Commons CC0</a></p>
-		<p class="hide-on-print"> <strong>Dashboard</strong> designed and developed by <a href="https://www.wikidata.org/wiki/User:Gnoeee">Gnoeee</a>
-		</p></p>
-		<p class="print-only"> Printed from the dashboard designed and developed by<a href="https://www.wikidata.org/wiki/User:Gnoeee"> Gnoeee</a>
-		</p>
-		</div>
-	</div>
-</footer>
-<script>
-  function toggleSidenav() {
-    var dropdown = document.getElementById("panchayat-select");
-    var sidenav = document.getElementById("mySidenav");
-
-    if (dropdown.value !== "") {
-      sidenav.style.display = "block";
-    } else {
-      sidenav.style.display = "none";
-    }
-  }
-
-  window.addEventListener("DOMContentLoaded", function() {
-    var dropdown = document.getElementById("panchayat-select");
-    dropdown.addEventListener("change", toggleSidenav);
-
-    var sidenav = document.getElementById("mySidenav");
+  if (locationDropdown.value === "") {
     sidenav.style.display = "none";
-  });
+  } else if (panchayatDropdown.value !== "") {
+    sidenav.style.display = "block";
+  } else {
+    sidenav.style.display = "none";
+  }
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  var locationDropdown = document.getElementById("location-select");
+  locationDropdown.addEventListener("change", toggleSidenav);
+
+  var panchayatDropdown = document.getElementById("panchayat-select");
+  panchayatDropdown.addEventListener("change", toggleSidenav);
+
+  var sidenav = document.getElementById("mySidenav");
+  sidenav.style.display = "none";
+});
+
+// Set panchayatSelect as disabled initially
+panchayatSelect.disabled = true;
+panchayatTable.style.display = 'block';
+populationTable.style.display = 'none';
+
 </script>
 </body>
 </html>
