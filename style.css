@@ -146,20 +146,20 @@
     }
 
  #mySidenav {
-  position: absolute;
-  right: -55px;
+  position: relative;
+  left: -55px;
   transition: 0.3s;
   padding: 10px;
-  width: 140px;
+  width: 280px;
   text-decoration: none;
   font-size: 22px;
   color: white;
-  text-align: right;
+  text-align: left;
   border-radius: 10px 0 0 10px;
  }
 
  #mySidenav:hover {
-right: 0;
+left: 0;
 }
 
 #print {
@@ -201,7 +201,7 @@ right: 0;
 
 @media (min-width: 768px) {
    .container {
-    max-width: 710px;
+    max-width: 720px;
    }
 }
   </style>

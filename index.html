@@ -21,8 +21,7 @@
 </div>
 </section>
 <div id="mySidenav" class="sidenav hide-on-print">
-  <a href="#" onclick="window.print(); return false;">
-    <i class="fa fa-print"></i> Print
+  <a href="#" onclick="window.print(); return false;">Print <i class="fa fa-print"></i>
   </a>
 </div>
 </br>
@@ -145,7 +144,6 @@
       const populationData = document.getElementById('population-data');
       const loadingAnimation = document.getElementById('loading-animation');
 
-
       function fetchPanchayatList() {
         const selectedLocation = locationSelect.value;
         const selectedLocationText = locationSelect.options[locationSelect.selectedIndex].text;
@@ -195,8 +193,7 @@
           panchayatSelect.disabled = true;
           panchayatTable.style.display = 'none';
           populationTable.style.display = 'none';
-        }
-      }
+} }
 
 const selectedPanchayat = document.getElementById('selected-panchayat');
 const wardsCountElement = document.getElementById('wards-count');
