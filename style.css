@@ -146,11 +146,11 @@
     }
 
  #mySidenav {
-  position: relative;
+  position: absolute;
   left: -55px;
-  transition: 0.3s;
+  transition: 0.4s;
   padding: 10px;
-  width: 280px;
+  width: 100px;
   text-decoration: none;
   font-size: 22px;
   color: white;
@@ -164,6 +164,11 @@ left: 0;
 
 #print {
   top: 40px;
+  background-color: #4CAF50;
+}
+
+#lang {
+  top: 20px;
   background-color: #4CAF50;
 }
 

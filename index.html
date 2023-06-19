@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +9,26 @@
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="./style.css" rel="stylesheet">
   <title>കേരളത്തിലെ പഞ്ചായത്തുകൾ</title>
-</head>
+  <style>
+    .lang {
+      display: inline;
+    }
+  </style>
+ </head>
 <body>
+  <div class="lang-switch hide-on-print">
+    <label for="language-select">Select Language:</label>
+    <select id="language-select" onchange="switchLanguage()">
+      <option value="ml">Malayalam</option>
+      <option value="en">English</option>
+    </select>
+  </div>
 <section class="section hide-on-print"">
 <div class="container">
-	<div class="columns is-centered">
-		<div class="column is-half has-text-centered">
-      			<h1 class="title is-4 hide-on-print">കേരളത്തിലെ പഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തിൽ</h1>
+	<div align=center>
+		<div class="columns is-mobile is-multiline is-centered">
+  		<h1 class="title is-4 lang" data-ml="കേരളത്തിലെ പഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തിൽ">കേരളത്തിലെ പഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തിൽ</h1>
+  		<h1 class="title is-4 lang" data-en="Panchayats of Kerala at a Glance"></h1>
 		</div>
 	</div>
 </div>
@@ -24,34 +37,35 @@
   <a href="#" onclick="window.print(); return false;">Print <i class="fa fa-print"></i>
   </a>
 </div>
-</br>
-<div class="container">
+<section>
 	<div align=center>
 		<div class="columns is-mobile is-multiline is-centered hide-on-print">
 			<div class="column is-narrow">
 				<div class="dropdown">
-				<label for="location-select" class="hide-on-print">ജില്ല:</label>
-					<select id="location-select">
-					<option value="">------</option>
-					<option value="Q1419703">കാസർഗോഡ്</option>
-					<option value="Q2980652">കണ്ണൂർ</option>
-					<option value="Q1142979">കോഴിക്കോട്</option>
-					<option value="Q1364427">വയനാട്</option>
-					<option value="Q1030918">മലപ്പുറം</option>
-					<option value="Q1535742">പാലക്കാട്</option>
-					<option value="Q2429655">തൃശ്ശൂർ</option>
-					<option value="Q1356097">എറണാകുളം</option>
-					<option value="Q928959">ആലപ്പുഴ</option>
-					<option value="Q1353354">കോട്ടയം</option>
-					<option value="Q301821">ഇടുക്കി</option>
-					<option value="Q634935">പത്തനംതിട്ട</option>
-					<option value="Q1356124">കൊല്ലം</option>
-					<option value="Q162612">തിരുവനന്തപുരം</option>
-					</select>
+				  <p class="hide-on-print lang" data-ml="ജില്ല:">ജില്ല:</p>
+				  <p class="hide-on-print lang" data-en="District:"></p>
+	<select id="location-select" onchange="switchLanguage()">
+  		<option value="">------</option>
+    		<option value="Q1419703" class="lang" data-en="Kasaragod" data-ml="കാസർഗോഡ്">കാസർഗോഡ്</option>
+   		<option value="Q2980652" class="lang" data-en="Kannur" data-ml="കണ്ണൂർ">കണ്ണൂർ</option>
+    		<option value="Q1142979" class="lang" data-en="Kozhikode" data-ml="കോഴിക്കോട്">കോഴിക്കോട്</option>
+    		<option value="Q1364427" class="lang" data-en="Wayanad" data-ml="വയനാട്">വയനാട്</option>
+    		<option value="Q1030918" class="lang" data-en="Malappuram" data-ml="മലപ്പുറം">മലപ്പുറം</option>
+    		<option value="Q1535742" class="lang" data-en="Palakkad" data-ml="പാലക്കാട്">പാലക്കാട്</option>
+    		<option value="Q2429655" class="lang" data-en="Thrissur" data-ml="തൃശ്ശൂർ">തൃശ്ശൂർ</option>
+    		<option value="Q1356097" class="lang" data-en="Ernakulam" data-ml="എറണാകുളം">എറണാകുളം</option>
+    		<option value="Q928959" class="lang" data-en="Alappuzha" data-ml="ആലപ്പുഴ">ആലപ്പുഴ</option>
+    		<option value="Q1353354" class="lang" data-en="Kottayam" data-ml="കോട്ടയം">കോട്ടയം</option>
+    		<option value="Q301821" class="lang" data-en="Idukki" data-ml="ഇടുക്കി">ഇടുക്കി</option>
+    		<option value="Q634935" class="lang" data-en="Pathanamthitta" data-ml="പത്തനംതിട്ട">പത്തനംതിട്ട</option>
+    		<option value="Q1356124" class="lang" data-en="Kollam" data-ml="കൊല്ലം">കൊല്ലം</option>
+    		<option value="Q162612" class="lang" data-en="Thiruvananthapuram" data-ml="തിരുവനന്തപുരം">തിരുവനന്തപുരം</option>
+</select>
 				</div>
 </br></br>
 				<div class="dropdown">
-      				<label for="panchayat-select" class="hide-on-print">പഞ്ചായത്ത്:</label>
+      				<label for="panchayat-select" class="hide-on-print lang" data-ml="പഞ്ചായത്ത്:">പഞ്ചായത്ത്:</label>
+      				<label for="panchayat-select" class="hide-on-print lang" data-en="Panchayat:"></label>
 					<select id="panchayat-select">
 					<option value=""></option>
 					</select>
@@ -64,35 +78,43 @@
       		<h3 class="title is-5" id="selected-location"></h3>
 		</br>
 	</div>
-</div>
-<div class="container">
-      		<p class="subtitle is-5 has-text-centered">വാർഡുകൾ (എണ്ണം)</p>
-      		<p class="subtitle is-5 has-text-centered" id="wards-count"></p>
-</div>
+</section>
+<section>
+	<div align=center>
+	<div class="columns is-mobile is-multiline is-centered">
+		<div class="column is-narrow">
+      		<h4 class="subtitle is-5 lang" data-en="Wards (Count)" data-ml="വാർഡുകൾ (എണ്ണം)">വാർഡുകൾ (എണ്ണം)</h4>
+      		<p class="subtitle is-5" id="wards-count"></p>
+		</div>
+	</div>
+	</div>
+</section>
 </br>
 <div class="container">
 	<div align=center>
 		<div class="columns is-mobile is-multiline is-centered">
      			<div class="column is-narrow">
+		<div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content">
+<p>ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p></div></div>
+		<div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content"><p>കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p></div></div>
+		<div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content">
+<p>കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p></div></div>
         				<table class="table is-bordered centered-table" id="panchayat-table">
           				<thead>
             				<tr>
-         	 			<th>LGD കോഡ്</th><div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content">
-<p>ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p></div></div>
-         	 			<th>LSG കോഡ്</th><div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content"><p>കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p></div></div>
-				<th>SEC കോഡ്</th><div class="popup-container hide-on-print"><span> 🛈</span><div class="popup-content">
-<p>കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p></div></div>
+         	 			<th>LGD കോഡ് </th>
+         	 			<th>LSG കോഡ്</th>
+				<th>SEC കോഡ്</th>
 				</tr>
 				</thead>
 				<tbody id="panchayat-data">
 				</tbody>
 				</table>
-			</div>
-	
+</div>
       				<table class="table is-bordered centered-table" id="population-table">
           				<thead>
             				<tr>
-                  			<th>ജനസംഖ്യ</th>
+				<th>ജനസംഖ്യ</th>
                   			<th>പുരുഷജനസംഖ്യ</th>
           	 			<th>സ്ത്രീജനസംഖ്യ</th>
             				</tr>
@@ -100,13 +122,12 @@
 				<tbody id="population-data">
 				</tbody>
 				</table>
-			</div>
+			
 		</div>
 	</div>
 	<div class="loading" id="loading-animation">
           	<div class="loading-icon"></div></div>
 </div>
-</section>
 <section class="section">
     	<div class="container">
 		<button class="btn"><a href="https://map.opendatakerala.org/" style="color:white; text-decoration: none; right: 0;"><p class="hide-on-print">View and Download the Map</p></a></button>
@@ -114,10 +135,13 @@
 </section>
 <section>
 	<div class="container">
-		<div class="content has-text-centered">
-		<p class="print-only">LGD കോഡ്: ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്</p>
-		<p class="print-only">LSG കോഡ്: കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്</p>
-		<p class="print-only">SEC കോഡ്: കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്</p>
+		<div class="content has-text-centered print-only">
+		<p class="lang" data-ml="LGD കോഡ്: ലോക്കൽ ഗവൺമെന്റ് ഡയറക്ടറിയിൽ കേന്ദ്ര, സംസ്ഥാന, റവന്യൂ, തദ്ദേശസ്വയംഭരണ സ്ഥാപനങ്ങളുടെയും അവയുടെ വാർഡുകൾക്കും ഇന്ത്യ സർക്കാർ നൽകുന്ന കോഡ്"></p></br>
+		<p class="lang" data-en="LGD Code: Codes given by Government of India for Central, State, Revenue and Local Self-Government bodies and their wards in Local Government Directory"></p></br>
+		<p class="lang" data-ml="LSG കോഡ്: കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ് തദ്ദേശ സ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്"></p></br>
+		<p class="lang" data-en="LSG Code: Kerala Local Self-Government Department Code issued for the local bodies in Kerala"></p></br>
+		<p class="lang" data-ml="SEC കോഡ്: കേരള സംസ്ഥാന തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ തദ്ദേശ സ്ഥാപനങ്ങൾക്കും വാർഡുകൾക്കും നൽകുന്ന കോഡ്"></p></br>
+		<p class="lang" data-en="SEC Code: Code issued by Kerala State Election Commission to local bodies and wards for election purposes"></p></br>
 		</div>
 	</div>
 </section>
@@ -134,207 +158,6 @@
 		</div>
 	</div>
 </footer>
-<script>
-
-      const locationSelect = document.getElementById('location-select');
-      const panchayatSelect = document.getElementById('panchayat-select');
-      const panchayatTable = document.getElementById('panchayat-table');
-      const populationTable = document.getElementById('population-table');
-      const panchayatData = document.getElementById('panchayat-data');
-      const populationData = document.getElementById('population-data');
-      const loadingAnimation = document.getElementById('loading-animation');
-
-      function fetchPanchayatList() {
-        const selectedLocation = locationSelect.value;
-        const selectedLocationText = locationSelect.options[locationSelect.selectedIndex].text;
-        if (selectedLocation) {
-          document.getElementById('selected-location').textContent = `${selectedLocationText} ജില്ല`;
-          const sparqlQueryList = `
-            SELECT ?panchayat ?panchayatLabel
-            WHERE {
-              ?panchayat wdt:P31 wd:Q2732840;
-                        wdt:P131 wd:${selectedLocation};
-                        rdfs:label ?panchayatLabel.
-              FILTER(LANG(?panchayatLabel) = 'ml')
-            }
-            ORDER BY ?panchayatLabel
-            LIMIT 150
-          `;
-
-          const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryList)}`;
-
-          fetch(url, {
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-            .then(response => response.json())
-            .then(data => {
-              const results = data.results.bindings;
-              panchayatSelect.innerHTML = '<option value="">_____</option>';
-              results.forEach(result => {
-                const panchayatURI = result.panchayat.value;
-                const panchayatLabel = result.panchayatLabel.value;
-                const option = document.createElement('option');
-                option.value = panchayatURI;
-                option.textContent = panchayatLabel;
-                panchayatSelect.appendChild(option);
-              });
-              panchayatSelect.disabled = false;
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
-        } else {
-          document.getElementById('selected-location').textContent = '';
-          panchayatSelect.innerHTML = '<option value="">-----</option>';
-          panchayatSelect.disabled = true;
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-} }
-
-const selectedPanchayat = document.getElementById('selected-panchayat');
-const wardsCountElement = document.getElementById('wards-count');
-
-function displaySelectedPanchayat() {
-          if (locationSelect.value !== '') {
-    selectedPanchayat.textContent = '';
-    wardsCountElement.textContent = '';
-  	} else {
-    	const selectedPanchayatOption = panchayatSelect.options[panchayatSelect.selectedIndex];
-    	const selectedPanchayatLabel = selectedPanchayatOption.textContent;
-    	selectedPanchayat.textContent = selectedPanchayatLabel;
-	wardsCountElement.textContent = wardsCount;
-  	}
-}
-
-panchayatSelect.addEventListener('change', displaySelectedPanchayat);
-locationSelect.addEventListener('change', displaySelectedPanchayat);
-
-      function fetchPanchayatData() {
-        const selectedPanchayatURI = panchayatSelect.value;
-        if (selectedPanchayatURI) {
-          const sparqlQueryData = `
-            SELECT ?panchayatLabel ?population ?malePopulation ?femalePopulation ?LGDcode ?LSGcode ?SECcode (COUNT(?wards) AS ?wardsCount)
-            WHERE {
-              <${selectedPanchayatURI}> rdfs:label ?panchayatLabel.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P1082 ?population }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P1540 ?malePopulation }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P1539 ?femalePopulation }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P527 ?wards }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P6425 ?LGDcode }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P8573 ?LSGcode }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P11817 ?SECcode }.
-              FILTER(LANG(?panchayatLabel) = 'ml')
-            }
-          GROUP BY ?panchayatLabel ?population ?malePopulation ?femalePopulation ?LGDcode ?LSGcode ?SECcode
-            LIMIT 1
-          `;
-
-          const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryData)}`;
-
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-          loadingAnimation.style.display = 'flex';
-
-          const wardsCountElement = document.getElementById('wards-count');
-
-          fetch(url, {
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-            .then(response => response.json())
-            .then(data => {
-              const panchayat = data.results.bindings[0];
-              if (panchayat) {
-                const panchayatLabel = panchayat.panchayatLabel?.value || 'N/A';
-                const wardsCount = panchayat.wardsCount?.value || 'N/A';
-                const population = panchayat.population?.value || 'N/A';
-                const malePopulation = panchayat.malePopulation?.value || 'N/A';
-                const femalePopulation = panchayat.femalePopulation?.value || 'N/A';
-                const LGDcode = panchayat.LGDcode?.value || 'N/A';
-                const LSGcode = panchayat.LSGcode?.value || 'N/A';
-                const SECcode = panchayat.SECcode?.value || 'N/A';
-
-                // Set the wardsCount value and Panchayat Label
-                wardsCountElement.textContent = wardsCount;
-
-                selectedPanchayat.textContent = panchayatLabel;
-
-                const panchayatRow = `
-                  <tr>
-                    <td class="has-text-centered">${LGDcode}</td>
-                    <td class="has-text-centered">${LSGcode}</td>
-                    <td class="has-text-centered">${SECcode}</td>
-                  </tr>
-                `;
-                panchayatData.innerHTML = panchayatRow;
-
-                const populationRow = `
-                  <tr>
-                    <td class="has-text-centered">${population}</td>
-                    <td class="has-text-centered">${malePopulation}</td>
-                    <td class="has-text-centered">${femalePopulation}</td>
-                  </tr>
-                `;
-                populationData.innerHTML = populationRow;
-
-                panchayatTable.style.display = 'block';
-                populationTable.style.display = 'block';
-              } else {
-                panchayatData.innerHTML = '<tr><td colspan="3">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
-                populationData.innerHTML = '<tr><td colspan="3">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
-                panchayatTable.style.display = 'none';
-                populationTable.style.display = 'none';
-              }
-
-              loadingAnimation.style.display = 'none';
-            })
-            
-        } else {
-         selectedPanchayat.textContent = '';
-          panchayatData.innerHTML = '';
-          populationData.innerHTML = '';
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-        }
-      }
-      locationSelect.addEventListener('change', fetchPanchayatList);
-      panchayatSelect.addEventListener('change', fetchPanchayatData);
-
-function toggleSidenav() {
-  var locationDropdown = document.getElementById("location-select");
-  var panchayatDropdown = document.getElementById("panchayat-select");
-  var sidenav = document.getElementById("mySidenav");
-
-  if (locationDropdown.value === "") {
-    sidenav.style.display = "none";
-  } else if (panchayatDropdown.value !== "") {
-    sidenav.style.display = "block";
-  } else {
-    sidenav.style.display = "none";
-  }
-}
-
-window.addEventListener("DOMContentLoaded", function() {
-  var locationDropdown = document.getElementById("location-select");
-  locationDropdown.addEventListener("change", toggleSidenav);
-
-  var panchayatDropdown = document.getElementById("panchayat-select");
-  panchayatDropdown.addEventListener("change", toggleSidenav);
-
-  var sidenav = document.getElementById("mySidenav");
-  sidenav.style.display = "none";
-});
-
-// Set panchayatSelect as disabled initially
-panchayatSelect.disabled = true;
-panchayatTable.style.display = 'block';
-populationTable.style.display = 'none';
-
-</script>
+<script src="script.js"></script>
 </body>
 </html>
