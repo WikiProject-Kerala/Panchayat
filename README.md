@@ -5,7 +5,7 @@ Panchayats in Kerala at a glance from Wikidata.
 
 കേരളത്തിലെ പഞ്ചായത്തുകൾ ഒറ്റനോട്ടത്തില്‍ വിക്കിഡാറ്റയിൽ നിന്ന്.
 
-![Preview](/Images/Sample Data.PNG)
+![Sample Data](/Images/Sample%20Data.PNG?raw=true "Preview")
 
 ### Codes available 
 - LSG Code - കേരള തദ്ദേശ സ്വയംഭരണ വകുപ്പ്തദ്ദേശസ്ഥാപനങ്ങൾ നൽകുന്ന കോഡ്
