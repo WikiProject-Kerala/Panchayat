@@ -118,6 +118,21 @@
     display: inline-block;
   }
 
+
+  .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin-bottom: 20px; /* Adjust margin as needed */
+  }
+
+  .table-container td, .table-container th {
+    padding: 10px;
+    word-wrap: break-word; /* Allow word wrapping */
+    max-width: 150px; /* Adjust max-width as needed */
+  }
+
+
+
   .popup-content {
     display: none;
     position: absolute;
