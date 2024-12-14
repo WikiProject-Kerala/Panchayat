@@ -125,7 +125,7 @@ locationSelect.addEventListener('change', displaySelectedPanchayat);
                       WHERE {
                             ?wards wdt:P31 wd:Q1195098;
                                    p:P31 ?id.
-                            ?id pq:P642 <${selectedPanchayatURI}>.
+                            ?id pq:P131 <${selectedPanchayatURI}>.
              	}
               LIMIT 150
             	}
