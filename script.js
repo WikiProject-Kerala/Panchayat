@@ -11,200 +11,302 @@ function switchLanguage() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   var switchElement = document.querySelector('.lang-switch');
   switchElement.style.display = 'block';
 
   var langElements = document.querySelectorAll('.lang');
   for (var i = 0; i < langElements.length; i++) {
-    langElements[i].addEventListener('click', function() {
+    langElements[i].addEventListener('click', function () {
       switchElement.style.display = 'inline';
     });
   }
 });
 
 
-      const locationSelect = document.getElementById('location-select');
-      const panchayatSelect = document.getElementById('panchayat-select');
-      const panchayatTable = document.getElementById('panchayat-table');
-      const populationTable = document.getElementById('population-table');
-      const panchayatData = document.getElementById('panchayat-data');
-      const populationData = document.getElementById('population-data');
-      const loadingAnimation = document.getElementById('loading-animation');
+// Global data storage
+let lsgData = [];
+let selectedYear = '2025';
 
-      function fetchPanchayatList() {
-        const selectedLocation = locationSelect.value;
-        const selectedLocationText = locationSelect.options[locationSelect.selectedIndex].text;
-        const selectedLanguage = document.getElementById("language-select").value;
-        if (selectedLocation) {
-          document.getElementById('selected-location').textContent = `${selectedLocationText} ജില്ല`;
-          const sparqlQueryList = `
-            SELECT ?panchayat ?panchayatLabel
-            WHERE {
-             {?panchayat wdt:P31 wd:Q2732840.}
-              UNION
-             {?panchayat wdt:P31 wd:Q4927168.}
-              UNION
-             {?panchayat wdt:P31 wd:Q2758248.}
-              ?panchayat wdt:P131 wd:${selectedLocation};
-                        	rdfs:label ?panchayatLabel.
-              FILTER(LANG(?panchayatLabel) = '${selectedLanguage}')
-            }
-            ORDER BY ?panchayatLabel
-            LIMIT 200
-          `;
-
-          const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryList)}`;
-
-          fetch(url, {
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-            .then(response => response.json())
-            .then(data => {
-              const results = data.results.bindings;
-              panchayatSelect.innerHTML = '<option value="">_____</option>';
-              results.forEach(result => {
-                const panchayatURI = result.panchayat.value;
-                const panchayatLabel = result.panchayatLabel.value;
-                const option = document.createElement('option');
-                option.value = panchayatURI;
-                option.textContent = panchayatLabel;
-                panchayatSelect.appendChild(option);
-              });
-              panchayatSelect.disabled = false;
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
-        } else {
-          document.getElementById('selected-location').textContent = '';
-          panchayatSelect.innerHTML = '<option value="">-----</option>';
-          panchayatSelect.disabled = true;
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-} }
-
+const locationSelect = document.getElementById('location-select');
+locationSelect.disabled = true;
+const panchayatSelect = document.getElementById('panchayat-select');
+const panchayatTable = document.getElementById('panchayat-table');
+const populationTable = document.getElementById('population-table');
+const panchayatData = document.getElementById('panchayat-data');
+const populationData = document.getElementById('population-data');
+const loadingAnimation = document.getElementById('loading-animation');
 const selectedPanchayat = document.getElementById('selected-panchayat');
 const wardsCountElement = document.getElementById('wards-count');
+const yearRadios = document.querySelectorAll('input[name="year"]');
 
-function displaySelectedPanchayat() {
-          if (locationSelect.value !== '') {
-    selectedPanchayat.textContent = '';
-    wardsCountElement.textContent = '';
-  	} else {
-    	const selectedPanchayatOption = panchayatSelect.options[panchayatSelect.selectedIndex];
-    	const selectedPanchayatLabel = selectedPanchayatOption.textContent;
-    	selectedPanchayat.textContent = selectedPanchayatLabel;
-	wardsCountElement.textContent = wardsCount;
-  	}
+// Helper to clear displays
+function clearDisplays() {
+  selectedPanchayat.textContent = '';
+  wardsCountElement.textContent = '';
+  panchayatData.innerHTML = '';
+  populationData.innerHTML = '';
+  panchayatTable.style.display = 'none';
+  populationTable.style.display = 'none';
 }
 
-panchayatSelect.addEventListener('change', displaySelectedPanchayat);
-locationSelect.addEventListener('change', displaySelectedPanchayat);
+// 1. Fetch ALL LSG Data from OpenDataKerala on Load (Federated Query)
+function fetchAllLSGData() {
+  loadingAnimation.style.display = 'flex';
 
-      function fetchPanchayatData() {
-        const selectedPanchayatURI = panchayatSelect.value;
-        const selectedLanguage = document.getElementById("language-select").value;
-        if (selectedPanchayatURI) {
-          const sparqlQueryData = `
-            SELECT ?panchayatLabel ?population ?malePopulation ?femalePopulation ?LGDcode ?LSGcode ?SECcode (COUNT(?wards) AS ?wardsCount)
+  const sparqlQuery = `
+            PREFIX wd:  <https://opendatakerala.wikibase.cloud/entity/>
+            PREFIX wdt: <https://opendatakerala.wikibase.cloud/prop/direct/>
+            PREFIX p:   <https://opendatakerala.wikibase.cloud/prop/>
+            PREFIX ps:  <https://opendatakerala.wikibase.cloud/prop/statement/>
+            PREFIX pq:  <https://opendatakerala.wikibase.cloud/prop/qualifier/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX wikibase: <http://wikiba.se/ontology#>
+            PREFIX bd: <http://www.bigdata.com/rdf#>
+            # Wikidata Prefixes for Federation
+            PREFIX wd_wd: <http://www.wikidata.org/entity/>
+            PREFIX wd_wdt: <http://www.wikidata.org/prop/direct/>
+
+            SELECT
+            ?item
+            ?ilen
+            ?ilml
+            ?district
+            ?districtLabel
+            ?SEC_Kerala_code
+            ?LSG_localbody_code
+            ?population
+            ?malePopulation
+            ?femalePopulation
+            ?LGDcode
+            # 2015: point in time = 2015 OR end time = 2025
+            (COALESCE(
+                SAMPLE(?no2015_pt),
+                SAMPLE(?no2015_end)
+            ) AS ?no_of_wards_2015)
+            # 2025: start time = 2025, else fall back to 2015 value
+            (COALESCE(
+                SAMPLE(?no2025_start),
+                COALESCE(
+                SAMPLE(?no2015_pt),
+                SAMPLE(?no2015_end)
+                )
+            ) AS ?no_of_wards_2025)
             WHERE {
-              <${selectedPanchayatURI}> rdfs:label ?panchayatLabel.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P1082 ?population }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P1540 ?malePopulation }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P1539 ?femalePopulation }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P6425 ?LGDcode }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P8573 ?LSGcode }.
-               OPTIONAL { <${selectedPanchayatURI}> wdt:P11817 ?SECcode }.
-              FILTER(LANG(?panchayatLabel) = '${selectedLanguage}')
-              	{ SELECT ?wards
-                      WHERE {
-                            ?wards wdt:P31 wd:Q1195098;
-                                   p:P31 ?id.
-                            ?id pq:P131 <${selectedPanchayatURI}>.
-             	}
-              LIMIT 150
-            	}
+
+            ?item wdt:P2 ?type .
+            VALUES ?type { wd:Q969 wd:Q24 wd:Q967 wd:Q968 wd:Q1064 }
+
+            OPTIONAL {
+                ?item rdfs:label ?ilml .
+                FILTER(LANG(?ilml) = "ml")
             }
-          GROUP BY ?panchayatLabel ?population ?malePopulation ?femalePopulation ?LGDcode ?LSGcode ?SECcode
-            LIMIT 1
+            OPTIONAL {
+                ?item rdfs:label ?ilen .
+                FILTER(LANG(?ilen) = "en")
+            }
+
+            OPTIONAL { ?item wdt:P5  ?district . }
+            OPTIONAL { ?item wdt:P21 ?SEC_Kerala_code . }
+            OPTIONAL { ?item wdt:P20 ?LSG_localbody_code . }
+
+            # Federation to fetch Population and LGD Code from Wikidata
+            # Note: Must use Wikidata-specific prefixes inside SERVICE block
+            OPTIONAL {
+               SERVICE <https://query.wikidata.org/sparql> {
+                   SELECT ?LSG_localbody_code ?population ?malePopulation ?femalePopulation ?LGDcode WHERE {
+                       ?wdItem wd_wdt:P8573 ?LSG_localbody_code.
+                       OPTIONAL { ?wdItem wd_wdt:P1082 ?population. }
+                       OPTIONAL { ?wdItem wd_wdt:P1540 ?malePopulation. }
+                       OPTIONAL { ?wdItem wd_wdt:P1539 ?femalePopulation. }
+                       OPTIONAL { ?wdItem wd_wdt:P6425 ?LGDcode. }
+                   }
+               }
+            }
+
+            # -------- Wards for 2015 --------
+            OPTIONAL {
+                {
+                # case 1: number of wards with point in time = 2015
+                ?item p:P19 ?stmt2015_pt .
+                ?stmt2015_pt ps:P19 ?no2015_pt .
+                ?stmt2015_pt pq:P27 ?pt2015 .
+                FILTER(YEAR(?pt2015) = 2015)
+                }
+                UNION
+                {
+                # case 2: number of wards with end time = 2025 (old wards, valid for 2015)
+                ?item p:P19 ?stmt2015_end .
+                ?stmt2015_end ps:P19 ?no2015_end .
+                ?stmt2015_end pq:P29 ?end2025 .
+                FILTER(YEAR(?end2025) = 2025)
+                }
+            }
+
+            # -------- Wards for 2025 --------
+            OPTIONAL {
+                {
+                # number of wards with start time = 2025 (new wards)
+                ?item p:P19 ?stmt2025_start .
+                ?stmt2025_start ps:P19 ?no2025_start .
+                ?stmt2025_start pq:P28 ?start2025 .
+                FILTER(YEAR(?start2025) = 2025)
+                }
+            }
+
+            SERVICE wikibase:label {
+                bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".
+            }
+            }
+            GROUP BY
+            ?item
+            ?ilen
+            ?ilml
+            ?district
+            ?districtLabel
+            ?SEC_Kerala_code
+            ?LSG_localbody_code
+            ?population
+            ?malePopulation
+            ?femalePopulation
+            ?LGDcode
           `;
 
-          const url = `https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=${encodeURIComponent(sparqlQueryData)}`;
+  const endpointUrl = 'https://opendatakerala.wikibase.cloud/query/sparql';
 
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-          loadingAnimation.style.display = 'flex';
+  fetch(endpointUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/json'
+    },
+    body: 'query=' + encodeURIComponent(sparqlQuery)
+  })
+    .then(response => response.json())
+    .then(data => {
+      lsgData = data.results.bindings;
+      loadingAnimation.style.display = 'none';
+      // Enable district selection
+      locationSelect.disabled = false;
+    })
+    .catch(error => {
+      console.error('Error fetching ODK data:', error);
+      loadingAnimation.style.display = 'none';
+      selectedPanchayat.textContent = "Error loading data. Please refresh.";
+    });
+}
 
-          const wardsCountElement = document.getElementById('wards-count');
+// 2. Populate Panchayat Dropdown based on District Selection
+function populatePanchayatList() {
+  const selectedDistrictId = locationSelect.value; // internal code like Q1419703
+  const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+  const districtNameEn = selectedOption.getAttribute('data-en');
+  const districtNameMl = selectedOption.getAttribute('data-ml');
+  const curLang = document.getElementById("language-select").value;
 
-          fetch(url, {
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-            .then(response => response.json())
-            .then(data => {
-              const panchayat = data.results.bindings[0];
-              if (panchayat) {
-                const panchayatLabel = panchayat.panchayatLabel?.value || 'N/A';
-                const wardsCount = panchayat.wardsCount?.value || 'N/A';
-                const population = panchayat.population?.value || 'N/A';
-                const malePopulation = panchayat.malePopulation?.value || 'N/A';
-                const femalePopulation = panchayat.femalePopulation?.value || 'N/A';
-                const LGDcode = panchayat.LGDcode?.value || 'N/A';
-                const LSGcode = panchayat.LSGcode?.value || 'N/A';
-                const SECcode = panchayat.SECcode?.value || 'N/A';
+  if (!selectedDistrictId || !lsgData.length) {
+    panchayatSelect.innerHTML = '<option value="">-----</option>';
+    panchayatSelect.disabled = true;
+    clearDisplays();
+    document.getElementById('selected-location').textContent = '';
+    return;
+  }
 
-                // Set the wardsCount value and Panchayat Label
-                wardsCountElement.textContent = wardsCount;
+  document.getElementById('selected-location').textContent = `${selectedOption.text} ജില്ല`;
 
-                selectedPanchayat.textContent = panchayatLabel;
+  // Filter lsgData. We need to match district. 
+  const filtered = lsgData.filter(item => {
+    if (!item.districtLabel) return false;
+    // Check if districtLabel matches the English name of selected district
+    return item.districtLabel.value === districtNameEn;
+  });
 
-                const panchayatRow = `
-                  <tr>
-                    <td class="has-text-centered">${LGDcode}</td>
-                    <td class="has-text-centered">${LSGcode}</td>
-                    <td class="has-text-centered">${SECcode}</td>
-                  </tr>
-                `;
-                panchayatData.innerHTML = panchayatRow;
+  // Sort by label
+  filtered.sort((a, b) => {
+    const labelA = curLang === 'ml' ? (a.ilml?.value || a.ilen?.value) : (a.ilen?.value || a.ilml?.value);
+    const labelB = curLang === 'ml' ? (b.ilml?.value || b.ilen?.value) : (b.ilen?.value || b.ilml?.value);
+    return (labelA || '').localeCompare(labelB || '');
+  });
 
-                const populationRow = `
-                  <tr>
-                    <td class="has-text-centered">${population}</td>
-                    <td class="has-text-centered">${malePopulation}</td>
-                    <td class="has-text-centered">${femalePopulation}</td>
-                  </tr>
-                `;
-                populationData.innerHTML = populationRow;
+  panchayatSelect.innerHTML = '<option value="">Select Panchayat</option>';
+  filtered.forEach(item => {
+    const label = curLang === 'ml' ? (item.ilml?.value || item.ilen?.value) : (item.ilen?.value || item.ilml?.value);
+    const option = document.createElement('option');
+    option.value = item.item.value; // Store URI as value
+    option.textContent = label || "Unknown";
+    panchayatSelect.appendChild(option);
+  });
 
-                panchayatTable.style.display = 'block';
-                populationTable.style.display = 'block';
-              } else {
-                panchayatData.innerHTML = '<tr><td colspan="3">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
-                populationData.innerHTML = '<tr><td colspan="3">ഡാറ്റ കണ്ടെത്തിയില്ല</td></tr>';
-                panchayatTable.style.display = 'none';
-                populationTable.style.display = 'none';
-              }
+  panchayatSelect.disabled = false;
+  clearDisplays();
+}
 
-              loadingAnimation.style.display = 'none';
-            })
-            
-        } else {
-         selectedPanchayat.textContent = '';
-          panchayatData.innerHTML = '';
-          populationData.innerHTML = '';
-          panchayatTable.style.display = 'none';
-          populationTable.style.display = 'none';
-        }
-      }
-      locationSelect.addEventListener('change', fetchPanchayatList);
-      panchayatSelect.addEventListener('change', fetchPanchayatData);
+// 3. Display Selected Panchayat Data (Core + Wikidata fetch)
+function displaySelectedPanchayat() {
+  const uri = panchayatSelect.value;
+  if (!uri) {
+    clearDisplays();
+    return;
+  }
+
+  const item = lsgData.find(d => d.item.value === uri);
+  if (!item) return;
+
+  const curLang = document.getElementById("language-select").value;
+  const label = curLang === 'ml' ? (item.ilml?.value || item.ilen?.value) : (item.ilen?.value || item.ilml?.value);
+
+  selectedPanchayat.textContent = label;
+
+  // Wards
+  const count = selectedYear === '2015' ? (item.no_of_wards_2015?.value) : (item.no_of_wards_2025?.value);
+  wardsCountElement.textContent = count || "N/A";
+
+  // Core Data Table (LSG, SEC)
+  const lsgCode = item.LSG_localbody_code?.value || "N/A";
+  const secCode = item.SEC_Kerala_code?.value || "N/A";
+  const lgdCode = item.LGDcode?.value || "N/A";
+
+  panchayatData.innerHTML = `
+             <tr>
+               <td class="has-text-centered">${lgdCode}</td>
+               <td class="has-text-centered">${lsgCode}</td>
+               <td class="has-text-centered">${secCode}</td>
+             </tr>
+          `;
+  panchayatTable.style.display = 'block';
+
+  // Population Table
+  const pop = item.population?.value || "N/A";
+  const mal = item.malePopulation?.value || "N/A";
+  const fem = item.femalePopulation?.value || "N/A";
+
+  const populationRow = `
+            <tr>
+              <td class="has-text-centered">${pop}</td>
+              <td class="has-text-centered">${mal}</td>
+              <td class="has-text-centered">${fem}</td>
+            </tr>
+          `;
+  populationData.innerHTML = populationRow;
+  populationTable.style.display = 'block';
+}
+
+// Event Listeners
+locationSelect.addEventListener('change', populatePanchayatList);
+panchayatSelect.addEventListener('change', displaySelectedPanchayat);
+
+yearRadios.forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    selectedYear = e.target.value;
+    displaySelectedPanchayat(); // Refresh display
+  });
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  fetchAllLSGData();
+});
+
 
 function toggleSidenav() {
   var locationDropdown = document.getElementById("location-select");
@@ -220,7 +322,7 @@ function toggleSidenav() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("DOMContentLoaded", function () {
   var locationDropdown = document.getElementById("location-select");
   locationDropdown.addEventListener("change", toggleSidenav);
 

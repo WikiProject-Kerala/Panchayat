@@ -1,65 +1,56 @@
-<style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: white;
-    }
-
-    .card {
-      width: 500px;
-      height: 300px;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
-
-.container {
-    max-width: 100%;
-    align-items: center;
-    justify-content: center;
+.card {
+  width: 500px;
+  height: 300px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
 
-    .loading {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      height: 100px;
-      font-size: 16px;
-      color: #ffffff;
-    }
+.container {
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+}
 
-    .loading.show-loading {
-      display: none;
-    }
+.loading {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  font-size: 16px;
+  color: #ffffff;
+}
 
-    .loading::before {
-      content: "";
-      width: 70px;
-      height: 70px;
-      border-radius: 250%;
-      border: 2px solid #4caf50;
-      border-top-color: transparent;
-      animation: spin 0.5s linear infinite;
-    }
+.loading.show-loading {
+  display: none;
+}
 
-    .suggestion-list {
-      list-style: none;
-      padding: 0;
-      margin-top: 10px;
-      display: none;
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-    }
+.loading::before {
+  content: "";
+  width: 70px;
+  height: 70px;
+  border-radius: 250%;
+  border: 2px solid #4caf50;
+  border-top-color: transparent;
+  animation: spin 0.5s linear infinite;
+}
 
-    .suggestion-list-item {
-      padding: 10px;
-      cursor: pointer;
-    }
+.suggestion-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  display: none;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.suggestion-list-item {
+  padding: 10px;
+  cursor: pointer;
+}
 
 .btn {
   background-color: #4CAF50;
@@ -67,19 +58,21 @@
   color: white;
   padding: 12px 30px;
   font-size: 16px;
-  margin:auto;
+  margin: auto;
   border-radius: 10px 10px 10px 10px;
   opacity: 1;
   transition: 0.8s;
-  display: flex; 
-  justify-content: center; 
+  display: flex;
+  justify-content: center;
 }
 
-.btn:hover {opacity: 0.4}
+.btn:hover {
+  opacity: 0.4
+}
 
-.section{
-    padding-top: 38px;
-    padding-bottom: 30px;
+.section {
+  padding-top: 38px;
+  padding-bottom: 30px;
 }
 
 .arrow {
@@ -88,79 +81,83 @@
 }
 
 .container {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .table {
-      margin-left: auto;
-      margin-right: auto;
-    }
+  margin-left: auto;
+  margin-right: auto;
+}
 
-    table th {
-      background-color: #dff9eb;
-      padding: 8px;
-      text-align: center;
-    }
+table th {
+  background-color: #dff9eb;
+  padding: 8px;
+  text-align: center;
+}
 
-    table td {
-      padding: 8px;
-      text-align: center;
-      has-text-centered;
-    }
+table td {
+  padding: 8px;
+  text-align: center;
+}
 
 .centered-table {
-    margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.popup-container {
+  position: relative;
+  display: inline-block;
+}
+
+
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-bottom: 20px;
+  /* Adjust margin as needed */
+}
+
+.table-container td,
+.table-container th {
+  padding: 10px;
+  word-wrap: break-word;
+  /* Allow word wrapping */
+  max-width: 150px;
+  /* Adjust max-width as needed */
+}
+
+
+
+.popup-content {
+  display: none;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  width: 200px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.popup-container:hover .popup-content {
+  display: block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
 
-  .popup-container {
-    position: relative;
-    display: inline-block;
+  100% {
+    transform: rotate(360deg);
   }
+}
 
-
-  .table-container {
-    max-width: 100%;
-    overflow-x: auto;
-    margin-bottom: 20px; /* Adjust margin as needed */
-  }
-
-  .table-container td, .table-container th {
-    padding: 10px;
-    word-wrap: break-word; /* Allow word wrapping */
-    max-width: 150px; /* Adjust max-width as needed */
-  }
-
-
-
-  .popup-content {
-    display: none;
-    position: absolute;
-    right: 100%;
-    top: 0;
-    width: 200px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 1;
-  }
-
-  .popup-container:hover .popup-content {
-    display: block;
-  }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
- #mySidenav {
+#mySidenav {
   position: absolute;
   left: -55px;
   transition: 0.4s;
@@ -171,10 +168,10 @@
   color: white;
   text-align: left;
   border-radius: 10px 0 0 10px;
- }
+}
 
- #mySidenav:hover {
-left: 0;
+#mySidenav:hover {
+  left: 0;
 }
 
 #print {
@@ -187,41 +184,40 @@ left: 0;
   background-color: #4CAF50;
 }
 
-  @media print {
-    .print-border {
-      border: 1px solid black;
-      padding: 10px;
-    }
+@media print {
+  .print-border {
+    border: 1px solid black;
+    padding: 10px;
   }
-
-.footer{
-    padding-top: 10px;
-    padding-bottom: 20px;
 }
 
+.footer {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.hide-on-print {
+  display: initial;
+}
+
+@media print {
   .hide-on-print {
-    display: initial;
+    display: none !important;
   }
+}
 
-  @media print {
-    .hide-on-print {
-      display: none !important;
-    }
-  }
+.print-only {
+  display: none;
+}
 
+@media print {
   .print-only {
-    display: none;
+    display: block !important;
   }
-
-  @media print {
-    .print-only {
-      display: block !important;
-    }
-  }
+}
 
 @media (min-width: 768px) {
-   .container {
+  .container {
     max-width: 720px;
-   }
+  }
 }
-  </style>
